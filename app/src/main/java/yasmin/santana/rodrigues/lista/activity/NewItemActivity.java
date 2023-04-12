@@ -24,15 +24,15 @@ public class NewItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
 
-        ImageButton imgCI = findViewById(R.id.imbCl);
+        ImageButton imgCI = findViewById(R.id.imbCl); //conecta com o butão
         imgCI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                Intent photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT); //abertura da galeria
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, PHOTO_PICKER_REQUEST);
 
-                if(photoSelected == null){
+                if(photoSelected == null){ //bloco de erros, se algum campo estiver vazio
                     Toast.makeText(NewItemActivity.this, "É necessário selecionar uma imagem!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -49,8 +49,8 @@ public class NewItemActivity extends AppCompatActivity {
                     return;
 
                 }
-                Intent i = new Intent();
-                i.setData(photoSelected);
+                Intent i = new Intent(); //guarda dados que irão retornar para MainAct
+                i.setData(photoSelected); //setando os itens
                 i.putExtra("title", title);
                 i.putExtra("desc", desc);
                 setResult(Activity.RESULT_OK, i);
@@ -62,11 +62,11 @@ public class NewItemActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == PHOTO_PICKER_REQUEST){
+        if(requestCode == PHOTO_PICKER_REQUEST){ // ve se selecionou alguma foto
             if(resultCode == Activity.RESULT_OK){
                 photoSelected = data.getData();
                 ImageView imvfotoPreview = findViewById(R.id.imvPhotoPreview);
-                imvfotoPreview.setImageURI(photoSelected);
+                imvfotoPreview.setImageURI(photoSelected); //guarda o lugar da sua foto
             }
         }
     }
