@@ -29,14 +29,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FloatingActionButton fabAddItem= findViewById(R.id.fabAddNewItem);
-        fabAddItem.setOnClickListener(new View.OnClickListener(){
+        fabAddItem.setOnClickListener(new View.OnClickListener(){ //pega clicks
             @Override
             public void onClick(View v){
                 Intent i = new Intent(MainActivity.this, NewItemActivity.class);
-                startActivityForResult(i, NEW_ITEM_REQUEST);
+                startActivityForResult(i, NEW_ITEM_REQUEST); //assume que a new item classe vai enviar dados em algum momento para a main
             }
         });
-        RecyclerView rvItens = findViewById(R.id.rvItens);
+        RecyclerView rvItens = findViewById(R.id.rvItens); // recyclerview: os itens que ficaram fora da parte visível da tela são “excluídos” e reutilizados para gerar //
+        // os novos itens que estão na sequência da lista, aumentando a fluidez da lista
 
         myAdapter = new MyAdapter(this, itens);
         rvItens.setAdapter(myAdapter);
@@ -54,15 +55,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //função
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == NEW_ITEM_REQUEST){
+        if(requestCode == NEW_ITEM_REQUEST){ //ve se o resultado está dentro dos parãmetros esperados
             if(resultCode == Activity.RESULT_OK){
-                MyItem myItem = new MyItem();
+                MyItem myItem = new MyItem(); //recebe os dados que new item trouxr
                 myItem.title = data.getStringExtra("title");
                 myItem.desc = data.getStringExtra("desc");
                 myItem.photo = data.getData();
 
-                itens.add(myItem);
-                myAdapter.notifyItemInserted(itens.size()-1);
+                itens.add(myItem); //add as informações na lista
+                myAdapter.notifyItemInserted(itens.size()-1); //atualiza o recycle view
             }
         }
     }
