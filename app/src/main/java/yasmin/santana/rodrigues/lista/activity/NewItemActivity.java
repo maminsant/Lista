@@ -13,17 +13,26 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 
 import yasmin.santana.rodrigues.lista.R;
+import yasmin.santana.rodrigues.lista.model.NewItemActivityViewModel;
 
 public class NewItemActivity extends AppCompatActivity {
     static int PHOTO_PICKER_REQUEST = 1;
-    Uri photoSelected = null;
+    //Uri photoSelected = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
+
+        NewItemActivityViewModel vm = new ViewModelProvider(this).get(NewItemActivityViewModel.class); //declarando o vm
+        Uri selectPhotoLocation = vm.getSelectPhotoLocation(); //pegando o enderço da imagem no vm
+        if(selectPhotoLocation != null){
+            ImageView imvphotoPreview = findViewById(R.id.imvPhotoPreview);
+            imvphotoPreview.setImageURI(selectPhotoLocation);
+        }
 
         ImageButton imgCI = findViewById(R.id.imbCl); //conecta com o butão
         imgCI.setOnClickListener(new View.OnClickListener() {
@@ -41,7 +50,9 @@ public class NewItemActivity extends AppCompatActivity {
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (photoSelected == null) { //bloco de erros, se algum campo estiver vazio
+                NewItemActivityViewModel vm = new ViewModelProvider(NewItemActivity.this).get(NewItemActivityViewModel.class);
+                Uri selectPhotoLocation = vm.getSelectPhotoLocation();
+                if (selectPhotoLocation == null) { //bloco de erros, se algum campo estiver vazio
                     Toast.makeText(NewItemActivity.this, "É necessário selecionar uma imagem!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -59,7 +70,7 @@ public class NewItemActivity extends AppCompatActivity {
 
                 }
                 Intent i = new Intent(); //guarda dados que irão retornar para MainAct
-                i.setData(photoSelected); //setando os itens
+                i.setData(selectPhotoLocation); //setando os itens
                 i.putExtra("title", title);
                 i.putExtra("desc", desc);
                 setResult(Activity.RESULT_OK, i); //mostrando result se condições estiverem corretas
@@ -74,9 +85,12 @@ public class NewItemActivity extends AppCompatActivity {
 
         if(requestCode == PHOTO_PICKER_REQUEST){ // ve se selecionou alguma foto
             if(resultCode == Activity.RESULT_OK){
-                photoSelected = data.getData();
-                ImageView imvfotoPreview = findViewById(R.id.imvPhotoPreview);
-                imvfotoPreview.setImageURI(photoSelected); //guarda o lugar da sua foto
+                Uri photoSelected = data.getData();
+                ImageView imvphotoPreview = findViewById(R.id.imvPhotoPreview);
+                imvphotoPreview.setImageURI(photoSelected); //guarda o lugar da sua foto
+
+                NewItemActivityViewModel vm = new ViewModelProvider(this).get(NewItemActivityViewModel.class);
+                vm.setSelectPhotoLocation(photoSelected); //setando a imagem na tela
             }
         }
     }
